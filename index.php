@@ -1,10 +1,8 @@
 <?php
 session_start();
 
-// Password protection
 define('PASSWORD', 'YOUR_PASSWORD');
 
-// Check if user is logged in
 if (!isset($_SESSION['loggedin'])) {
     if (isset($_POST['password'])) {
         if ($_POST['password'] === PASSWORD) {
@@ -14,7 +12,6 @@ if (!isset($_SESSION['loggedin'])) {
         }
     }
     
-    // Show login form if not logged in
     if (!isset($_SESSION['loggedin'])) {
         ?>
         <!DOCTYPE html>
@@ -143,18 +140,15 @@ if (!isset($_SESSION['loggedin'])) {
     }
 }
 
-// Define constants and configuration
 define('DATA_CSV', 'data.csv');
 define('DATA_DAT', 'data.dat');
 
-// Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
     header('Location: index.php');
     exit();
 }
 
-// Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         switch ($_POST['action']) {
@@ -168,7 +162,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Function to get previous data
 function getPreviousData() {
     $expense_id = [];
     $spent_amount = [];
@@ -218,7 +211,6 @@ function getPreviousData() {
     ];
 }
 
-// Function to add new expense
 function addNewExpense() {
     $previous_data = getPreviousData();
     $budget = getMonthlyBudget() + $previous_data['monthly_received'] - $previous_data['monthly_spent'];
@@ -252,7 +244,6 @@ function addNewExpense() {
     exit();
 }
 
-// Function to get all expenses
 function getAllExpenses() {
     $expenses = [];
     
@@ -269,7 +260,6 @@ function getAllExpenses() {
     return $expenses;
 }
 
-// Function to set monthly budget
 function setMonthlyBudget() {
     $budget = floatval($_POST['budget']);
     file_put_contents(DATA_DAT, $budget);
@@ -281,7 +271,6 @@ function setMonthlyBudget() {
     exit();
 }
 
-// Function to get monthly budget
 function getMonthlyBudget() {
     if (file_exists(DATA_DAT)) {
         return floatval(file_get_contents(DATA_DAT));
@@ -289,7 +278,6 @@ function getMonthlyBudget() {
     return 0;
 }
 
-// Function to get expenses by category
 function getExpensesByCategory($category) {
     $expenses = [];
     
@@ -308,7 +296,6 @@ function getExpensesByCategory($category) {
     return $expenses;
 }
 
-// Function to get last three months expenses
 function getLastThreeMonthsExpenses() {
     $months = [];
     $current_month = date('m');
@@ -361,7 +348,6 @@ function getLastThreeMonthsExpenses() {
     return $months;
 }
 
-// Get data for display
 $all_expenses = getAllExpenses();
 $monthly_budget = getMonthlyBudget();
 $previous_data = getPreviousData();
@@ -370,7 +356,6 @@ $received_amount = $previous_data['monthly_received'];
 $remaining_budget = $monthly_budget + $received_amount - $spent_amount;
 $last_three_months = getLastThreeMonthsExpenses();
 
-// Handle view requests
 $view = isset($_GET['view']) ? $_GET['view'] : 'main';
 $category_expenses = [];
 
@@ -525,8 +510,7 @@ if ($view === 'category' && isset($_GET['category'])) {
             border-bottom: 2px solid #f0f0f0;
             padding-bottom: 10px;
         }
-        
-        /* Desktop Table Styles */
+
         .desktop-table {
             width: 100%;
             border-collapse: collapse;
@@ -549,8 +533,7 @@ if ($view === 'category' && isset($_GET['category'])) {
         .desktop-table tr:hover {
             background-color: #f5f5f5;
         }
-        
-        /* Mobile Card Styles */
+
         .mobile-cards {
             display: none;
             margin-top: 15px;
@@ -639,7 +622,6 @@ if ($view === 'category' && isset($_GET['category'])) {
             transition: background 0.3s ease;
         }
 
-        
         .message {
             padding: 15px;
             margin-bottom: 20px;
@@ -701,8 +683,7 @@ if ($view === 'category' && isset($_GET['category'])) {
         .net-negative {
             color: #d32f2f;
         }
-        
-        /* Responsive styles */
+
         @media (max-width: 768px) {
             .dashboard {
                 grid-template-columns: 1fr;
@@ -867,7 +848,7 @@ if ($view === 'category' && isset($_GET['category'])) {
                 <button class="close-btn" onclick="hideSection('view')">×</button>
                 <h2>All Entries</h2>
                 <?php if (!empty($all_expenses)): ?>
-                    <!-- Desktop Table -->
+                    
                     <div class="desktop-table-container">
                         <table class="desktop-table">
                             <thead>
@@ -894,8 +875,7 @@ if ($view === 'category' && isset($_GET['category'])) {
                             </tbody>
                         </table>
                     </div>
-                    
-                    <!-- Mobile Cards -->
+
                     <div class="mobile-cards">
                         <?php foreach ($all_expenses as $expense): ?>
                             <div class="entry-card <?php echo $expense[1]; ?>">
@@ -1028,7 +1008,7 @@ if ($view === 'category' && isset($_GET['category'])) {
                 ?>
                 
                 <?php if (!empty($current_month_entries)): ?>
-                    <!-- Desktop Table -->
+                    
                     <div class="desktop-table-container">
                         <table class="desktop-table">
                             <thead>
@@ -1055,8 +1035,7 @@ if ($view === 'category' && isset($_GET['category'])) {
                             </tbody>
                         </table>
                     </div>
-                    
-                    <!-- Mobile Cards -->
+
                     <div class="mobile-cards">
                         <?php foreach ($current_month_entries as $entry): ?>
                             <div class="entry-card <?php echo $entry[1]; ?>">
@@ -1095,7 +1074,7 @@ if ($view === 'category' && isset($_GET['category'])) {
             <div class="content-section">
                 <h2>Entries in Category: <?php echo $_GET['category']; ?></h2>
                 <?php if (!empty($category_expenses)): ?>
-                    <!-- Desktop Table -->
+                    
                     <div class="desktop-table-container">
                         <table class="desktop-table">
                             <thead>
@@ -1124,8 +1103,7 @@ if ($view === 'category' && isset($_GET['category'])) {
                             </tbody>
                         </table>
                     </div>
-                    
-                    <!-- Mobile Cards -->
+
                     <div class="mobile-cards">
                         <?php foreach ($category_expenses as $expense): ?>
                             <div class="entry-card <?php echo $expense[1]; ?>">
@@ -1167,15 +1145,12 @@ if ($view === 'category' && isset($_GET['category'])) {
     
     <script>
         function showSection(sectionId) {
-            // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
                 section.style.display = 'none';
             });
             
-            // Show the selected section
             document.getElementById(sectionId).style.display = 'block';
             
-            // Scroll to the section
             document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
         }
         
@@ -1183,7 +1158,6 @@ if ($view === 'category' && isset($_GET['category'])) {
             document.getElementById(sectionId).style.display = 'none';
         }
         
-        // Auto-hide messages after 3 seconds
         setTimeout(function() {
             const message = document.getElementById('autoMessage');
             if (message) {
@@ -1191,7 +1165,6 @@ if ($view === 'category' && isset($_GET['category'])) {
             }
         }, 3000);
         
-        // Show category if it was requested
         <?php if ($view === 'category' && isset($_GET['category'])): ?>
             window.addEventListener('load', function() {
                 showSection('category');
